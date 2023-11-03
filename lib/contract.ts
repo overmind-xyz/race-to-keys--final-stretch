@@ -6,68 +6,55 @@ import {
   HexString,
   Network,
   Provider,
-} from 'aptos';
-import { ContractGetCollectionsResponse, ContractGetHoldersResponse, ContractGetOwnedCollectionsResponse, ContractTradeEvent, User } from './types';
+} from "aptos";
+import {
+  ContractGetCollectionsResponse,
+  ContractGetHoldersResponse,
+  ContractGetOwnedCollectionsResponse,
+  ContractTradeEvent,
+  User,
+} from "./types";
 
 const MODULE_ADDRESS =
-  process.env.MODULE_ADDRESS ||
-  '0xedfa769774f2418e706fd38318e457030aa6fd632c827efa48decd9340061403';
+  "0xedfa769774f2418e706fd38318e457030aa6fd632c827efa48decd9340061403";
 const RESOURCE_ACCOUNT_ADDRESS =
-  process.env.RESOURCE_ACCOUNT_ADDRESS ||
-  '0x121b76dc1d52f73904d30dd7d80e8eefea22f5a0b6b26d02d007b32b3ea9e454';
-const MODULE_NAME = 'race_to_keys';
+  "0x121b76dc1d52f73904d30dd7d80e8eefea22f5a0b6b26d02d007b32b3ea9e454";
+const MODULE_NAME = "race_to_keys";
 
-const client = new AptosClient('https://fullnode.testnet.aptoslabs.com');
+const client = new AptosClient("https://fullnode.testnet.aptoslabs.com");
 const faucetClient = new FaucetClient(
-  'https://fullnode.testnet.aptoslabs.com',
-  'https://faucet.testnet.aptoslabs.com'
+  "https://fullnode.testnet.aptoslabs.com",
+  "https://faucet.testnet.aptoslabs.com"
 );
 const coinClient = new CoinClient(client);
 const provider = new Provider(Network.TESTNET);
 
-const FUNDING_ACCOUNT_PRIVATE_KEY = process.env.FUNDING_ACCOUNT_PRIVATE_KEY;
 const TRANSACTION_OPTIONS = {
-  max_gas_amount: '500000',
-  gas_unit_price: '100',
+  max_gas_amount: "500000",
+  gas_unit_price: "100",
 };
 
 export async function getAptosBalance(address: string) {
   try {
     const balance = await coinClient.checkBalance(address);
-    console.log('balance', balance)
-    return Number(balance) / 1_0000_0000; 
+    console.log("balance", balance);
+    return Number(balance) / 1_0000_0000;
   } catch (e) {
-    console.log('error getting balance', e);
+    console.log("error getting balance", e);
     return 0;
   }
 }
 
 async function fundAccount(accountToFund: AptosAccount) {
-
   try {
-    if (await getAptosBalance(accountToFund.address().toString()) > .5) {
+    if ((await getAptosBalance(accountToFund.address().toString())) > 0.5) {
       return;
     }
   } catch (e) {
     // ignore
   }
 
-  if (FUNDING_ACCOUNT_PRIVATE_KEY) {
-    const fundingAccount = new AptosAccount(
-      new HexString(FUNDING_ACCOUNT_PRIVATE_KEY).toUint8Array()
-    );
-    const transfer = await coinClient.transfer(
-      fundingAccount,
-      accountToFund,
-      5000_0000,
-      {
-        createReceiverIfMissing: true,
-      }
-    );
-    await client.waitForTransaction(transfer, { checkSuccess: true });
-  } else {
-    await faucetClient.fundAccount(accountToFund.address(), 5000_0000);
-  }
+  await faucetClient.fundAccount(accountToFund.address(), 5000_0000);
 }
 
 /* 
@@ -77,22 +64,21 @@ async function fundAccount(accountToFund: AptosAccount) {
   @param amountToBuy - The amount of keys to buy.
 */
 export async function buyKeys(
-  buyer: User, 
+  buyer: User,
   keySubjectAddress: string,
   amountToBuy: number
 ) {
-  const buyerAccount = new AptosAccount(new HexString(buyer.privateKey).toUint8Array());
+  const buyerAccount = new AptosAccount(
+    new HexString(buyer.privateKey).toUint8Array()
+  );
 
   await fundAccount(buyerAccount);
 
-  const rawTxn = await provider.generateTransaction(
-    buyerAccount.address(),
-    {
-      function: `${MODULE_ADDRESS}::${MODULE_NAME}::buy_keys`,
-      type_arguments: [],
-      arguments: [keySubjectAddress, amountToBuy],
-    }
-  );
+  const rawTxn = await provider.generateTransaction(buyerAccount.address(), {
+    function: `${MODULE_ADDRESS}::${MODULE_NAME}::buy_keys`,
+    type_arguments: [],
+    arguments: [keySubjectAddress, amountToBuy],
+  });
 
   const tx = await provider.signAndSubmitTransaction(buyerAccount, rawTxn);
 
@@ -106,11 +92,13 @@ export async function buyKeys(
   @param amountToSell - The amount of keys to sell.
 */
 export async function sellKeys(
-  seller: User, 
+  seller: User,
   keySubjectAddress: string,
   amountToSell: number
 ) {
-  const sellerAccount = new AptosAccount(new HexString(seller.privateKey).toUint8Array());
+  const sellerAccount = new AptosAccount(
+    new HexString(seller.privateKey).toUint8Array()
+  );
 
   await fundAccount(sellerAccount);
 
@@ -134,16 +122,14 @@ export async function sellKeys(
   @param keySubjectAddress - The address of the key subject.
   @param amount - The amount of keys to buy.
 */
-export async function getBuyPrice(
-  keySubjectAddress: string,
-  amount: number
-) {
-  const response = (await provider.view({
-    function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_buy_price`,
-    type_arguments: [],
-    arguments: [keySubjectAddress, amount.toString()],
-  }))[0] as unknown as number;
-
+export async function getBuyPrice(keySubjectAddress: string, amount: number) {
+  const response = (
+    await provider.view({
+      function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_buy_price`,
+      type_arguments: [],
+      arguments: [keySubjectAddress, amount.toString()],
+    })
+  )[0] as unknown as number;
 
   return response / 1_0000_0000;
 }
@@ -153,18 +139,16 @@ export async function getBuyPrice(
   @param keySubjectAddress - The address of the key subject.
   @param amount - The amount of keys to sell.
 */
-export async function getSellPrice(
-  keySubjectAddress: string,
-  amount: number
-) {
-  const response = (await provider.view({
-    function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_sell_price`,
-    type_arguments: [],
-    arguments: [keySubjectAddress, amount.toString()],
-  }))[0] as unknown as number;
+export async function getSellPrice(keySubjectAddress: string, amount: number) {
+  const response = (
+    await provider.view({
+      function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_sell_price`,
+      type_arguments: [],
+      arguments: [keySubjectAddress, amount.toString()],
+    })
+  )[0] as unknown as number;
 
-
-  return response / 1_0000_0000 ;
+  return response / 1_0000_0000;
 }
 
 /*
@@ -176,13 +160,15 @@ export async function getBuyPriceAfterFees(
   keySubjectAddress: string,
   amount: number
 ) {
-  const response = (await provider.view({
-    function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_buy_price_after_fees`,
-    type_arguments: [],
-    arguments: [keySubjectAddress, amount.toString()],
-  }))[0] as unknown as number;
+  const response = (
+    await provider.view({
+      function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_buy_price_after_fees`,
+      type_arguments: [],
+      arguments: [keySubjectAddress, amount.toString()],
+    })
+  )[0] as unknown as number;
 
-  return response / 1_0000_0000 ;
+  return response / 1_0000_0000;
 }
 
 /*
@@ -194,13 +180,15 @@ export async function getSellPriceAfterFees(
   keySubjectAddress: string,
   amount: number
 ) {
-  const response = (await provider.view({
-    function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_sell_price_after_fees`,
-    type_arguments: [],
-    arguments: [keySubjectAddress, amount.toString()],
-  }))[0] as unknown as number;
+  const response = (
+    await provider.view({
+      function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_sell_price_after_fees`,
+      type_arguments: [],
+      arguments: [keySubjectAddress, amount.toString()],
+    })
+  )[0] as unknown as number;
 
-  return response / 1_0000_0000 ;
+  return response / 1_0000_0000;
 }
 
 /*
@@ -212,11 +200,13 @@ export async function getKeyBalance(
   keyOwnerAddress: string,
   keySubjectAddress: string
 ) {
-  const response = (await provider.view({
-    function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_key_balance`,
-    type_arguments: [],
-    arguments: [keyOwnerAddress, keySubjectAddress],
-  }))[0] as unknown as number;
+  const response = (
+    await provider.view({
+      function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_key_balance`,
+      type_arguments: [],
+      arguments: [keyOwnerAddress, keySubjectAddress],
+    })
+  )[0] as unknown as number;
 
   return response;
 }
@@ -225,14 +215,14 @@ export async function getKeyBalance(
   Get the key supply for a given key subject.
   @param keySubjectAddress - The address of the key subject.
 */
-export async function getKeySupply(
-  keySubjectAddress: string
-) {
-  const response = (await provider.view({
-    function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_key_supply`,
-    type_arguments: [],
-    arguments: [keySubjectAddress],
-  }))[0] as unknown as number;
+export async function getKeySupply(keySubjectAddress: string) {
+  const response = (
+    await provider.view({
+      function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_key_supply`,
+      type_arguments: [],
+      arguments: [keySubjectAddress],
+    })
+  )[0] as unknown as number;
 
   return response;
 }
@@ -241,11 +231,13 @@ export async function getKeySupply(
   Get the protocol's fee percentage. This is the percentage of the total transaction that is taken as a fee.
 */
 export async function getProtocolFeePercentage() {
-  const response = (await provider.view({
-    function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_protocol_fee_percentage`,
-    type_arguments: [],
-    arguments: [],
-  }))[0] as unknown as number;
+  const response = (
+    await provider.view({
+      function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_protocol_fee_percentage`,
+      type_arguments: [],
+      arguments: [],
+    })
+  )[0] as unknown as number;
 
   return response / 1_0000_0000;
 }
@@ -254,11 +246,13 @@ export async function getProtocolFeePercentage() {
   Get the subject's fee percentage. This is the percentage of the total transaction that is taken as a fee.
 */
 export async function getSubjectFeePercentage() {
-  const response = (await provider.view({
-    function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_subject_fee_percentage`,
-    type_arguments: [],
-    arguments: [],
-  }))[0] as unknown as number;
+  const response = (
+    await provider.view({
+      function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_subject_fee_percentage`,
+      type_arguments: [],
+      arguments: [],
+    })
+  )[0] as unknown as number;
 
   return response / 1_0000_0000;
 }
@@ -275,8 +269,8 @@ export async function getOwnedCollections(user: User) {
   })) as ContractGetOwnedCollectionsResponse;
 
   return response[0].map((collection, index) => ({
-    address: collection, 
-    keys: response[1][index]
+    address: collection,
+    keys: response[1][index],
   }));
 }
 
@@ -288,12 +282,12 @@ export async function getKeySubjects(user?: User) {
   const response = (await provider.view({
     function: `${MODULE_ADDRESS}::${MODULE_NAME}::get_all_key_collections`,
     type_arguments: [],
-    arguments: [user?.publicKey || '0x0'],
+    arguments: [user?.publicKey || "0x0"],
   })) as ContractGetCollectionsResponse;
 
   return response[0].map((collection, index) => ({
-    address: collection, 
-    keys: response[1][index]
+    address: collection,
+    keys: response[1][index],
   }));
 }
 
@@ -309,8 +303,8 @@ export async function getKeyHolders(keySubjectAddress: string) {
   })) as ContractGetHoldersResponse;
 
   return response[0].map((holder, index) => ({
-    address: holder, 
-    keys: response[1][index]
+    address: holder,
+    keys: response[1][index],
   }));
 }
 
@@ -318,14 +312,14 @@ export async function getKeyHolders(keySubjectAddress: string) {
   Get the trading event history for the last 50,000 trades on the protocol. 
 */
 export async function getTradeHistory() {
-  const response = await provider.getEventsByEventHandle(
+  const response = (await provider.getEventsByEventHandle(
     RESOURCE_ACCOUNT_ADDRESS,
     `${MODULE_ADDRESS}::${MODULE_NAME}::TradeEvents`,
-    'trade_events',
+    "trade_events",
     {
       limit: 50_000,
     }
-  ) as unknown as ContractTradeEvent[];
+  )) as unknown as ContractTradeEvent[];
 
   return response.reverse();
 }
