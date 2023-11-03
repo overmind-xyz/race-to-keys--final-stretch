@@ -1,6 +1,10 @@
 # Race to Keys Quest
 
-In this quest, you will compete with other developers in a challenge of speed, knowledge, and creativity. Build out this quest for a chance to win the keys to Overmind’s Network: the fastest-growing SoFi app on the Aptos network.
+In this quest, you will compete with other developers in a challenge of skill, creativity, and speed. Build out this quest for a chance to win the keys to Overmind’s Network: the fastest-growing SocialFi app on the Aptos blockchain.
+
+## Motivation
+
+Race to Keys calls you to display your building prowess, by building out Network’s most requested feature to date — Keys that grant access to people on the network! For a brief story of how we got here and where this quest is leading to, read the [Race launch thread](https://twitter.com/overmind_xyz/status/1719015741192630507).
 
 ## Integration with Quest Contract
 
@@ -12,13 +16,13 @@ The contract contains the following logic.
 
 - **Initializing keys for a new account**: The first key of each collection must be purchased (for free) by the account associated with the collection. This initializes the key supply for the specific subject (account).
 - **Purchasing keys**: After the creator purchases the first key, anyone else can purchase keys from their collection. The price of a key will increase as the supply of keys increases. keys can only be owned in whole amounts.
-- **Selling keys**: Anyone who owns a key can sell it anytime. If a key is the only share in supply, it cannot be sold.
+- **Selling keys**: Anyone who owns a key can sell it anytime. If a key is the only one in supply, it cannot be sold.
 
 ### Contract API
 
-In the template frontend package, we provide the middleware functionality to integrate with the contract. The middleware can be found in [`contract.ts`](./quest-frontend/race-to-keys-app/lib/contract.ts) in the `lib` directory.
+In the template frontend package, we provide the middleware functionality to integrate with the contract. The middleware can be found in `contract.ts` in the `lib` directory.
 
-## Object #1 - Private Key Custody System
+## Task 1: Private Key Custody System
 
 Build a private key storage system for the users. Your system needs to provide the following functionality:
 
@@ -31,12 +35,12 @@ Build a private key storage system for the users. Your system needs to provide t
 
 - **Navigate and interact with the app**: All user interactions with the deployed contract should be handled through the provided middleware functions using the user’s associated Aptos account.
 
-## Objective #2 - App Fundamental Features
+## Task 2: Fundamental Features
 
 - ****\*\*\*\*****Sign In / Sign Out****\*\*\*\*****
   - Authentication is handled by connecting a user’s Twitter account
 - **Dashboard**
-  - Display connected user’s Aptos address and basic information like account APT balance
+  - Display connected user’s Aptos address and basic information like account balance
   - Provide the ability for users to initialize their key collection
   - Display keys owned by the current user for different accounts, along with their current value.
   - Display current protocol fees (`getProtocolFeePercentage` and `getSubjectFeePercentage`)
@@ -44,23 +48,51 @@ Build a private key storage system for the users. Your system needs to provide t
   - Search for accounts and display their keys if present, including the number of keys and current value, with the option to buy
 - **********\*\***********Buy / Sell Keys**********\*\***********
   - Interface to allow users to purchase or sell keys of another account’s keys
-  - Integrates `buyKeys`, `sellKeys`, and fee methods
+  - Integrates `buyKeyes`, `sellKeys`, and fee methods
 - **Trade History**
   - Display recent trading activity by the connected user
   - Integrates `getTradeHistory`
 
-## 3. App Advanced Features
+## Bonus Task 1: Advanced Features
 
-In addition to features 1 and 2, you are encouraged to add any other features and systems to the app that you see fit. This is the chance to let your creative minds go wild and show us your stuff!
+In addition to features 1 and 2, you are invited to add any other features to the app that you see fit. This is the spot to let your creativity go wild and show us your edge!
 
 For example, a list of favorite keys or more detailed user pages with profile pictures and bios.
 
-# Bonus - Show us your attention to detail
+## Bonus Task 2: Key Utility
 
-Don’t forget to pay attention to the non-technical aspects of the app. In addition to your code, we will also look at the design and UX of your app! How your app looks and feels to your users is just as important as how well it works.
+The app you’ve built so far implements functionality around keys, but it lacks one essential element: key utility. What are keys useful for? Why should someone buy your keys, apart from trading them?
 
-# What to submit
+Keys are intended to grant access to their issuer. Let your imagine go wild here. You can look at what other SocialFi apps have implemented for inspiration, though we hope you will stretch above and beyond!
+
+Finally, don’t forget to pay attention to the non-technical aspects of the app. In addition to your code, we will also look at the design and UX of your app! How your app looks and feels to your users is just as important as how well it works.
+
+## What to submit
 
 - [ ] The complete code for your app, key custody system, as well as anything built for the quest.
 - [ ] A URL to a live demo instance of your app (replace the placeholder URL with your demo URL): [https://network.overmind.xyz](https://network.overmind.xyz/)
-- [ ] A short description of how you built your submission. We are looking for a description of the technologies you used, the reasoning behind your design choices, and general guidance to help us navigate and understand your code. A brief summary is perfect, no more is needed!
+- [ ] A short description of how you built your submission. We are looking for a description of the technologies you used, the reasoning behind your design decisions, and a general guideline to help us navigate your code. A brief summary is perfect, no more is needed!
+
+## Submission Deadline
+
+Submissions are due by Friday, November 10th end of day ET.
+
+## Evaluation Process
+
+There are four stages to selection of the Race winner:
+
+### Stage 1: Required Functionality
+
+Submissions will be evaluated on a Pass/Fail basis, like any other Overmind quest, on the basis of functionality and correctness for the required tasks (Tasks 1 and 2).
+
+### Stage 2: Shortlist
+
+Accepted quests will be evaluated by the Overmind team on the following four criteria, in order to arrive at a shortlist that will make it to the community vote stage:
+
+1. Technical Merit: is your implementation technically sound?
+2. Design Quality (UI/UX): is your app easy to use? Does it look good?
+3. Creativity and Innovation: have you implemented innovative ideas above and beyond the requirements? The b
+
+### Stage 3: Community Vote
+
+### Stage 4: Interview
