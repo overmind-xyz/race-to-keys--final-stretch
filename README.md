@@ -61,9 +61,7 @@ For example, a list of favorite keys or more detailed user pages with profile pi
 
 ## Bonus Task 2: Key Utility
 
-The app you’ve built so far implements functionality around keys, but it lacks one essential element: key utility. What are keys useful for? Why should someone buy your keys, apart from trading them?
-
-Keys are intended to grant access to their issuer. Let your imagine go wild here. You can look at what other SocialFi apps have implemented for inspiration, though we hope you will stretch above and beyond!
+The app you’ve built so far implements functionality around keys, but it lacks one essential element: key utility. What are keys useful for? Why should someone buy your keys, apart from trading them? Keys are intended to grant access to their issuer. Let your imagine go wild here. You can look at what other SocialFi apps have implemented for inspiration, though we hope you will stretch above and beyond what others have done!
 
 Finally, don’t forget to pay attention to the non-technical aspects of the app. In addition to your code, we will also look at the design and UX of your app! How your app looks and feels to your users is just as important as how well it works.
 
@@ -87,12 +85,16 @@ Submissions will be evaluated on a Pass/Fail basis, like any other Overmind ques
 
 ### Stage 2: Shortlist
 
-Accepted quests will be evaluated by the Overmind team on the following four criteria, in order to arrive at a shortlist that will make it to the community vote stage:
+Accepted quests will be evaluated by the Overmind team on the following three criteria, in order to arrive at a shortlist that will make it to the community vote stage:
 
-1. Technical Merit: is your implementation technically sound?
-2. Design Quality (UI/UX): is your app easy to use? Does it look good?
-3. Creativity and Innovation: have you implemented innovative ideas above and beyond the requirements? The b
+1. **Technical Merit (40%)**: is your implementation technically sound?
+2. **Design Quality (UI/UX) (40%)**: is your app easy to use? Does it look good?
+3. **Creativity and Innovation (20%)**: have you implemented innovative ideas above and beyond the requirements? The bonus tasks are the easiest way to get points here.
 
 ### Stage 3: Community Vote
 
+Projects shortlisted by the Overmind team will be opened to the community for a vote. We will share more details on how this will work in the coming days.
+
 ### Stage 4: Interview
+
+We will interview the top projects from the community vote, and select the final winner based on their ability to formulate and execute a vision as a founder of Network.
